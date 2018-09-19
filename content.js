@@ -5,11 +5,18 @@ chrome.runtime.onMessage.addListener(gotStatus);
 
 function gotStatus(status, sender, sendResponse) {
    console.log(`status recieved: isBubly -> ${status.mode}`);
+   console.log(images.length);
    if(status.mode){
-      console.log(images);
-      // for(let index of images){
-      //    console.log(images[index].width);
-      // }
+      for(let img of images){
+         console.log(img);
+         context = imgContext(img.url);
+         /* skip undefined or NaN contexts */
+         if(context){
+            console.log(context);
+         }
+
+      }
+      console.log("end of images");
    }else{
       /* Turn off bubbles */
    }
