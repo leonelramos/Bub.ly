@@ -1,10 +1,11 @@
-console.log("background loaded");
+var isBubly = false;
 
 chrome.browserAction.onClicked.addListener(buttonClicked);
 
-function buttonClicked(tab) {
-   let msg = {
-      txt: "hello"
+function buttonClicked (tab) {
+   isBubly = !isBubly;
+   let status = {
+      mode: isBubly
    }
-   chrome.tabs.sendMessage(tab.id, msg);
+   chrome.tabs.sendMessage(tab.id, status);
 }
