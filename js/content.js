@@ -1,19 +1,28 @@
 let color_distribution = new Map();
 let images = [...document.getElementsByTagName('img')];
+let min_height = 100;
+let min_width = 100;
 start_bubly();
 
 function start_bubly() 
 {
-   forAsync(images, (img, idx) => {
-      return new Promise(resolve => {
-         console.log(`processing image#${idx}`);
-         if(img.height > 100 && img.width > 100) {
-            let img_data = get_img_data(img.src);
-            process_img_data(img_data);
-         }
-         resolve();
-      })
-   });
+   for(idx in images){
+      console.log(`processing image#${idx}`);
+      if(images[idx].height >= min_height && images[idx].width >= min_width) {
+         let img_data = get_img_data(images[idx].src);
+         process_img_data(img_data);
+      }
+   }
+   // forAsync(images, (img, idx) => {
+   //    return new Promise(resolve => {
+   //       console.log(`processing image#${idx}`);
+   //       if(img.height > 100 && img.width > 100) {
+   //          let img_data = get_img_data(img.src);
+   //          process_img_data(img_data);
+   //       }
+   //       resolve();
+   //    })
+   // });
 }
 
 function process_img_data(img_data) {
@@ -54,16 +63,16 @@ function gen_rgba_key(rgba)
 /* Function Author: Stijn de Witt
  * GitHub: https://github.com/Download/for-async
  */
-function forAsync(arr, work) {
-	function loop(arr, i) {
-		return new Promise((resolve, reject) => {
-			if (i >= arr.length) {resolve()}
-			else try {
-				Promise.resolve(work(arr[i], i))
-				.then(() => resolve(loop(arr, i+1)))
-				.catch(reject);
-			} catch(error) {reject(error)}
-		})
-	}
-	return loop(arr, 0);
-}
+// function forAsync(arr, work) {
+// 	function loop(arr, i) {
+// 		return new Promise((resolve, reject) => {
+// 			if (i >= arr.length) {resolve()}
+// 			else try {
+// 				Promise.resolve(work(arr[i], i))
+// 				.then(() => resolve(loop(arr, i+1)))
+// 				.catch(reject);
+// 			} catch(error) {reject(error)}
+// 		})
+// 	}
+// 	return loop(arr, 0);
+// }
