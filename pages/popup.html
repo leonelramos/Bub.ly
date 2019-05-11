@@ -3,18 +3,20 @@
    <head>
       <meta charset="utf-8">
       <title>It's Bub.ly Time</title>
-      <link rel="stylesheet" href="../css/stylesheet.css">
+      <!-- <link rel="stylesheet" href="../css/stylesheet.css"> -->
+      <script src="../js/popup.js"></script>
    </head>
+   
    <body>
       <div class="container">
          <div class="main-menu">
             <ul class="main-menu-list">
                <li class="main-menu-item">
-                  <button>Bub.ly</button>
-                  <p class="status">Status<span> not running...</span></p>
+                  <input id="bubly-btn" type="button" value="Bub.ly">
+                  <p class="status">Status: not running...</p>
                </li>
                <li class="main-menu-item">
-                  <button disabled>Save</button>
+                  <input id="save-btn" type="button" value="Save data" disabled>
                </li>
             </ul>
             <div class="sub-menu">

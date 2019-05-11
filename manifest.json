@@ -14,13 +14,10 @@
          "matches": [
             "<all_urls>"
          ],
-         "js": ["./js/content.js"]
+         "js": ["content.js"]
       }
    ],
-   "permissions": ["tabs", "<all_urls>"],
-   "background": {
-      "scripts": ["./js/background.js"]
-   },
+   "permissions": ["tabs", "<all_urls>", "storage"],
    "browser_action": {
       "default_icon": "./images/bubly_icon.png",
       "default_title": "bub.ly",
