@@ -6,6 +6,7 @@ function start_bubly()
 {
    forAsync(images, (img, idx) => {
       return new Promise(resolve => {
+         console.log(`processing image#${idx}`);
          if(img.height > 100 && img.width > 100) {
             let img_data = get_img_data(img.src);
             process_img_data(img_data);
@@ -35,14 +36,19 @@ function get_img_data(url)
    return context.getImageData(0, 0, img.width, img.height);
 }
 /* given an array of 4 8bit integers, representing an r,g,b,a value respectivley
- * creates a **pseudo-unique key **not mathematically tested to make unique keys
+ * creates a string representation in the form "r,g,b,a"
  */
 function gen_rgba_key(rgba) 
 {
-   let r = rgba[0] * (1 << 24);
-   let g = rgba[1] << 16;
-   let b = rgba[2] << 8;
-   return r + g + b + rgba[3];
+   let r = rgba[0];
+   let g = rgba[1];
+   let b = rgba[2];
+   let a = rgba[3];
+   // let r = rgba[0] * (1 << 24);
+   // let g = rgba[1] << 16;
+   // let b = rgba[2] << 8;
+   // return r + g + b + rgba[3];
+   return `${r},${g},${b},${a}`;
 }
 
 /* Function Author: Stijn de Witt
