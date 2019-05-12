@@ -24,7 +24,10 @@ function start_bubly(settings)
    for(idx in images){
       console.log(`processing image#${idx}`);
       console.log(`(width:${images[idx].width},height:${images[idx].height},offset width:${images[idx].offsetWidth},offset height:${images[idx].offsetHeight})`);
-      if((images[idx].height >= min_height || images[idx].offsetHeight >= min_height) && (images[idx].width >= min_width || images[idx].offsetWidth >= min_width)) {
+      let is_min_size = (images[idx].height >= min_height || images[idx].offsetHeight >= min_height) && 
+                        (images[idx].width >= min_width || images[idx].offsetWidth >= min_width)
+      console.log(`is min size: ${is_min_size}`); 
+      if(is_min_size) {
          let img_data = get_img_data(images[idx].src);
          if(img_data) process_img_data(img_data);
       }

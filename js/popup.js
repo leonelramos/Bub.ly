@@ -9,7 +9,7 @@ function start_bubly()
     status_message.innerHTML = "Status: Bub.ly starting...";
     let setting_values = 
     {
-        include_grey: include_grey_checkbox.checked,
+		include_grey: include_grey_checkbox.checked,
         include_small_imgs: include_small_checkbox.checked
     }
     let message = {start_bubly: true, save_data: false, settings: setting_values};
