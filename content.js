@@ -1,7 +1,5 @@
 let color_distribution = new Map();
 let images = [...document.getElementsByTagName('img')];
-let min_height = 100;
-let min_width = 100;
 
 chrome.runtime.onMessage.addListener(got_request);
 
@@ -10,16 +8,19 @@ function got_request(request, sender, sendResponse) {
                "from a content script:" + sender.tab.url :
                "from the extension");
    if (request.start_bubly) {
-      start_bubly();
-      sendResponse({status: "Bub.ly Complete"});
+      start_bubly(request.settings);
+      sendResponse({status: "Bub.ly complete"});
+      console.log(color_distribution);
    }
    if (request.save_data) {
-      sendResponse({status: "Saving data..."});
+      sendResponse({status: "Bub.ly saved"});
    }
 }
 
-function start_bubly() 
+function start_bubly(settings) 
 {
+   let min_height = settings.include_small_imgs ? 1 : 100;
+   let min_width = settings.include_small_imgs ? 1 : 100;
    for(idx in images){
       console.log(`processing image#${idx}`);
       console.log(`(width:${images[idx].width},height:${images[idx].height},offset width:${images[idx].offsetWidth},offset height:${images[idx].offsetHeight})`);
@@ -53,8 +54,8 @@ function process_img_data(img_data) {
 function get_img_data(url) 
 {
    let img = document.createElement("img");
-   img.src = url;
    img.crossOrigin = "Anonymous";
+   img.src = url;
    let canvas = document.createElement('canvas');
    let context = canvas.getContext('2d');
    let width = img.width || img.offsetWidth || img.naturalWidth;
