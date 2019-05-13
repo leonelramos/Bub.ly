@@ -44,9 +44,10 @@ function start_bubly(settings)
    // });
 }
 
-function process_img_data(img_data) {
-   for (let i = 0; i < img_data.data.length; i += 4) {
-      let rgba = [img_data.data[i + 0], img_data.data[i + 1], img_data.data[i + 2], img_data.data[i + 3]];
+function process_img_data(img_data) 
+{
+   for (let i = 0; i < img_data.length; i += 4) {
+      let rgba = [img_data[i + 0], img_data[i + 1], img_data[i + 2], img_data[i + 3]];
       let rgba_key = gen_rgba_key(rgba);
       if(color_distribution.has(rgba_key)) color_distribution.set(rgba_key, color_distribution.get(rgba_key) + 1);
       else color_distribution.set(rgba_key, 1);
@@ -68,7 +69,7 @@ function get_img_data(url)
    /* Due to browser security measures, some images will always cause errors, no fix */
    try
    {
-      img_data = context.getImageData(0, 0, width, height);
+      img_data = context.getImageData(0, 0, width, height).data;
    }
    catch(e)
    {

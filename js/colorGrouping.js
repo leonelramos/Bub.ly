@@ -1,6 +1,9 @@
 /* 
  *  Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
  */
+
+let color_accuracy = 0.3;
+
 function hsl_to_rgb(h, s, l) 
 {
 	let r, g, b; 
@@ -83,6 +86,8 @@ function pixel_data_to_key(pixel_data)
 	return pixel_data[0].toString() + '-' + pixel_data[1].toString() + '-' + pixel_data[2].toString();
 }
 
+/***********************************************************************************************************/
+
 function posterize(context, image_data, palette) 
 {
 	for (let i = 0; i < image_data.data.length; i += 4) 
@@ -116,47 +121,58 @@ function draw(img) {
 	data = context.getImageData(0, 0, canvas.width, canvas.height).data;
 
 	/* convert every rgb pixel to hsl and store it */
-	original_pixels = [];
+	original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
 	for (i = 0; i < data.length; i += 4) {
 		rgb = data.slice(i, i + 3);
 		hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
 		original_pixels.push(hsl);
   	}
 
-	group_headers = [];  
-	groups = {};
-	
-	/* iterate through every original pixel */
-	for (i = 0; i < original_pixels.length; i += 1) 
+	group_headers = [];  /* --> [h, s, l] type: number[]    */
+	groups = {}; /* --> {"h-s-l":[h, s, l] type: number[]   } */
+	let number_of_pixels = original_pixels.length;
+	/* iterate through every original pixel in image */
+	for (i = 0; i < number_of_pixels; i += 1) 
 	{
+		let original_pixel = original_pixels[i]; /* --> [h, s, l] type: number[] */
 		if (group_headers.length == 0) 
 		{
-      		group_headers.push(original_pixels[i]);
+      		group_headers.push(original_pixel);
     	}
-    	group_found = false;
+		group_found = false;
+		let original_pixel_key = pixel_data_to_key(original_pixel);
+		/* compare the current pixel to each pixel in group_headers 
+		 * if they are similar, map the current pixel to the group_header pixel	
+		 */
 		for (j = 0; j < group_headers.length; j += 1) 
 		{
-		// if a similar color was already observed
-			if (color_distance(original_pixels[i], group_headers[j]) < 0.3) 
+			// if a similar color was already observed
+			if (color_distance(original_pixel, group_headers[j]) < color_accuracy) 
 			{
 				group_found = true;
-				if (!(pixel_data_to_key(original_pixels[i]) in groups)) 
+				/* if this pixel value has not been been mapped to a header, map it */
+				if (!(original_pixel_key in groups)) 
 				{
-					groups[pixel_data_to_key(original_pixels[i])] = group_headers[j];
+					groups[original_pixel_key] = group_headers[j];
 				}
 			}
 			if (group_found) break;
 		
 		}
+		/* if no similar header found */
 		if (!group_found) 
 		{
-			if (group_headers.indexOf(original_pixels[i]) == -1) 
+			/* if the current pixel has no similar colors in the headers and 
+			   is not itself in the headers, add it to the headers */
+			if (group_headers.indexOf(original_pixel) == -1) 
 			{
-				group_headers.push(original_pixels[i]);
+				group_headers.push(original_pixel);
 			}
-			if (!(pixel_data_to_key(original_pixels[i]) in groups)) 
+			/* if the current pixel has no similar color in the headers and 
+			   is not already mapped to a header pixel map it to itself */
+			if (!(original_pixel_key in groups)) 
 			{
-				groups[pixel_data_to_key(original_pixels[i])] = original_pixels[i];
+				groups[original_pixel_key] = original_pixel;
 			}
 		}
   	}
