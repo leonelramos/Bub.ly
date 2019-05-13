@@ -108,18 +108,33 @@ function posterize(context, image_data, palette)
   	context.putImageData(image_data, 0, 0);
 }
 
-function draw(img) {
-	let canvas = document.getElementById('canvas');
-	let context = canvas.getContext('2d');
-	context.drawImage(img, 0, 0, canvas.width, canvas.height);
-	img.style.display = 'none';
-	let image_data = context.getImageData(0, 0, canvas.width, canvas.height);
-	let data = image_data.data;
+function get_img_data(img_node)
+{
+   let img = document.createElement("img");
+   img.crossOrigin = "Anonymous";
+   img.src = img_node.url;
+   let canvas = document.createElement('canvas');
+   let context = canvas.getContext('2d');
+   let width = img.width || img.offsetWidth || img.naturalWidth;
+   let height = img.height || img.offsetHeight || img.naturalHeight;
+   context.drawImage(target_image, 0, 0, canvas.width, canvas.height);
+   let img_data = null;
+   /* Due to browser security measures, some images will always cause errors, no fix */
+   try
+   {
+      img_data = context.getImageData(0, 0, width, height).data;
+   }
+   catch(e)
+   {
+      console.log(e.message);
+   }
+   return img_data;
+}
 
-
-	context.drawImage(target_image, 0, 0, canvas.width, canvas.height);
-	data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-
+let group_headers = [];  /* --> [h, s, l] type: number[]    */
+let groups = {}; /* --> {"h-s-l":[h, s, l] type: number[]   } */
+function get_color_distribution(img) {
+	let data = get_img_data(img);
 	/* convert every rgb pixel to hsl and store it */
 	original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
 	for (i = 0; i < data.length; i += 4) {
@@ -127,9 +142,7 @@ function draw(img) {
 		hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
 		original_pixels.push(hsl);
   	}
-
-	group_headers = [];  /* --> [h, s, l] type: number[]    */
-	groups = {}; /* --> {"h-s-l":[h, s, l] type: number[]   } */
+	
 	let number_of_pixels = original_pixels.length;
 	/* iterate through every original pixel in image */
 	for (i = 0; i < number_of_pixels; i += 1) 
@@ -176,14 +189,6 @@ function draw(img) {
 			}
 		}
   	}
-  	posterize(context, image_data, groups)
+  	return groups;
 }
-
-
-let target_image = new Image();
-target_image.crossOrigin = "";
-target_image.onload = function() {
-	draw(target_image)
-};
-target_image.src = "http://i.imgur.com/zRzdADA.jpg";
 
