@@ -117,13 +117,17 @@ function get_img_data(url)
    }
 }
 
-let group_threshold = 0.3;
+let group_threshold = 1;
 function set_group_threshold(threshold)
 {
 	group_threshold = threshold;
 }
 let group_headers = [];  /* --> [h, s, l] type: number[]    */
 let hpixel_color_count = {};
+/**
+ * Function derived from: https://jsfiddle.net/ivanchaer/z0ohzghs/
+ * @param {*} url 
+ */
 function get_color_distribution(url) 
 {
 	let data = get_img_data(url); //[R,B,G,A,R,B,G,A]
@@ -140,16 +144,18 @@ function get_color_distribution(url)
   	}
 	
 	let number_of_pixels = original_pixels.length;
+	let original_pixel_key;
+	let original_pixel;
 	/* iterate through every original pixel in image */
 	for (i = 0; i < number_of_pixels; i += 1) 
 	{
-		let original_pixel = original_pixels[i]; /* --> [h, s, l] type: number[] */
+		original_pixel = original_pixels[i]; /* --> [h, s, l] type: number[] */
 		if (group_headers.length == 0) 
 		{
       		group_headers.push(original_pixel);
     	}
 		group_found = false;
-		let original_pixel_key = pixel_data_to_key(original_pixel);
+		original_pixel_key = pixel_data_to_key(original_pixel);
 		/* compare the current pixel to each pixel in group_headers 
 		 * if they are similar, map the current pixel to the group_header pixel	
 		 */

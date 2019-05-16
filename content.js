@@ -1,7 +1,7 @@
 let color_distribution = new Map();
 let unique_colors = new Array();
 let images = [...document.getElementsByTagName('img')];
-const cg = require("./js/colorGrouping");
+//const cg = require("./js/colorGrouping");
 
 chrome.runtime.onMessage.addListener(got_request);
 
