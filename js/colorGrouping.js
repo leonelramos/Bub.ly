@@ -1,10 +1,8 @@
 /* 
  *  Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+ *	read more about color conversion math here: http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
  */
-
-let color_accuracy = 0.3;
-
-function hsl_to_rgb(h, s, l) 
+export function hsl_to_rgb(h, s, l) 
 {
 	let r, g, b; 
     if (s == 0) 
@@ -29,10 +27,7 @@ function hsl_to_rgb(h, s, l)
     }
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
-/* 
- *  Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
- */
-function rgb_to_hsl(r, g, b) 
+export function rgb_to_hsl(r, g, b) 
 {
     r /= 255, g /= 255, b /= 255;
     let max = Math.max(r, g, b), 
@@ -63,7 +58,7 @@ function rgb_to_hsl(r, g, b)
 /* 
  *  Code from: http://stackoverflow.com/a/13587077/1204332
  */
-function color_distance(v1, v2) 
+export function color_distance(v1, v2) 
 {
 	let i,
 	d = 0;
@@ -75,20 +70,14 @@ function color_distance(v1, v2)
 	return Math.sqrt(d);
 };
 
-function round_to_groups(group_nr, x) 
-{
-	let divisor = 255 / group_nr;
-	return Math.ceil(x / divisor) * divisor;
-};
-
-function pixel_data_to_key(pixel_data) 
+export function pixel_data_to_key(pixel_data) 
 {
 	return pixel_data[0].toString() + '-' + pixel_data[1].toString() + '-' + pixel_data[2].toString();
 }
 
 /***********************************************************************************************************/
 
-function posterize(context, image_data, palette) 
+export function posterize(context, image_data, palette) 
 {
 	for (let i = 0; i < image_data.data.length; i += 4) 
 	{
@@ -108,7 +97,7 @@ function posterize(context, image_data, palette)
   	context.putImageData(image_data, 0, 0);
 }
 
-function get_img_data(img_node)
+export function get_img_data(img_node)
 {
    let img = document.createElement("img");
    img.crossOrigin = "Anonymous";
@@ -122,23 +111,32 @@ function get_img_data(img_node)
    /* Due to browser security measures, some images will always cause errors, no fix */
    try
    {
-      img_data = context.getImageData(0, 0, width, height).data;
+      img_data = context.getImageData(0, 0, width, height);
    }
    catch(e)
    {
       console.log(e.message);
    }
-   return img_data;
+   return img_data.data;
 }
 
-let group_headers = [];  /* --> [h, s, l] type: number[]    */
-let groups = {}; /* --> {"h-s-l":[h, s, l] type: number[]   } */
-function get_color_distribution(img) {
-	let data = get_img_data(img);
+export let group_threshold = 0.3;
+export function set_group_threshold(threshold)
+{
+	group_threshold = threshold;
+}
+export let group_headers = [];  /* --> [h, s, l] type: number[]    */
+export let hpixel_color_count = {};
+export function get_color_distribution(img) 
+{
+	let data = get_img_data(img); //[R,B,G,A,R,B,G,A]
 	/* convert every rgb pixel to hsl and store it */
-	original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
-	for (i = 0; i < data.length; i += 4) {
-		rgb = data.slice(i, i + 3);
+	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
+	for (i = 0; i < data.length; i += 8) {
+		let rgb = data.slice(i, i + 3);
+		let hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
+		original_pixels.push(hsl);
+		rgb = data.slice(i + 4, i + 7);
 		hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
 		original_pixels.push(hsl);
   	}
@@ -159,15 +157,13 @@ function get_color_distribution(img) {
 		 */
 		for (j = 0; j < group_headers.length; j += 1) 
 		{
+			header_pixel_key = pixel_data_to_key(group_headers[j]);
 			// if a similar color was already observed
-			if (color_distance(original_pixel, group_headers[j]) < color_accuracy) 
+			if (color_distance(original_pixel, group_headers[j]) < group_threshold) 
 			{
 				group_found = true;
-				/* if this pixel value has not been been mapped to a header, map it */
-				if (!(original_pixel_key in groups)) 
-				{
-					groups[original_pixel_key] = group_headers[j];
-				}
+				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key] += 1;
+				else hpixel_color_count[header_pixel_key] = 1;
 			}
 			if (group_found) break;
 		
@@ -175,18 +171,12 @@ function get_color_distribution(img) {
 		/* if no similar header found */
 		if (!group_found) 
 		{
+			if (original_pixel_key in hpixel_color_count) hpixel_color_count[original_pixel_key] += 1;
+			else hpixel_color_count[original_pixel_key] = 1;
 			/* if the current pixel has no similar colors in the headers and 
 			   is not itself in the headers, add it to the headers */
-			if (group_headers.indexOf(original_pixel) == -1) 
-			{
-				group_headers.push(original_pixel);
-			}
-			/* if the current pixel has no similar color in the headers and 
-			   is not already mapped to a header pixel map it to itself */
-			if (!(original_pixel_key in groups)) 
-			{
-				groups[original_pixel_key] = original_pixel;
-			}
+			if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
+			
 		}
   	}
   	return groups;
