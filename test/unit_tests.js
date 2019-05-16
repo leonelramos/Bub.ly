@@ -4,12 +4,12 @@
  * @author Leonel Ramos
  */
  
-export let tests = new Map();
+ let tests = new Map();
 
 /**
  * Runs all the currently existing tests
  */
-export function run_tests()
+function run_tests()
 {
     tests.forEach((__, test_name) => {
         run_test(test_name);
@@ -20,7 +20,7 @@ export function run_tests()
  * Run a single test
  * @param {string} test_name name of test to run 
  */
-export function run_test(test_name)
+function run_test(test_name)
 {
     let test = tests.get(test_name);
     test_unit(test.fn, test.input, test.expected_output);
@@ -46,7 +46,7 @@ function test_unit(fn, input, expected_output)
  * @param {*} input input for the function
  * @param {*} expected_output expected output of the function
  */
-export function add_test(test_name, fn, input, expected_output)
+function add_test(test_name, fn, input, expected_output)
 {
     tests.set(`${test_name}`, {fn: fn, input: input, expected_output: expected_output});
 }
@@ -58,7 +58,7 @@ export function add_test(test_name, fn, input, expected_output)
  * @param {*} input updated input for the function
  * @param {*} expected_output updated expected output of the function
  */
-export function update_test(test_name, new_fn, new_input, new_expected_output)
+function update_test(test_name, new_fn, new_input, new_expected_output)
 {
     add_test(test_name, new_fn, new_input, new_expected_output);
 }
@@ -67,7 +67,7 @@ export function update_test(test_name, new_fn, new_input, new_expected_output)
  * Deletes the test with the given name if it exists
  * @param {string} test_name name of test to delete
  */
-export function delete_test(test_name)
+function delete_test(test_name)
 {
     tests.delete(test_name);
 }

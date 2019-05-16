@@ -2,7 +2,7 @@
  *  Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
  *	read more about color conversion math here: http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
  */
-export function hsl_to_rgb(h, s, l) 
+function hsl_to_rgb(h, s, l) 
 {
 	let r, g, b; 
     if (s == 0) 
@@ -27,7 +27,7 @@ export function hsl_to_rgb(h, s, l)
     }
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
-export function rgb_to_hsl(r, g, b) 
+function rgb_to_hsl(r, g, b) 
 {
     r /= 255, g /= 255, b /= 255;
     let max = Math.max(r, g, b), 
@@ -58,7 +58,7 @@ export function rgb_to_hsl(r, g, b)
 /* 
  *  Code from: http://stackoverflow.com/a/13587077/1204332
  */
-export function color_distance(v1, v2) 
+function color_distance(v1, v2) 
 {
 	let i,
 	d = 0;
@@ -70,14 +70,14 @@ export function color_distance(v1, v2)
 	return Math.sqrt(d);
 };
 
-export function pixel_data_to_key(pixel_data) 
+function pixel_data_to_key(pixel_data) 
 {
 	return pixel_data[0].toString() + '-' + pixel_data[1].toString() + '-' + pixel_data[2].toString();
 }
 
 /***********************************************************************************************************/
 
-export function posterize(context, image_data, palette) 
+function posterize(context, image_data, palette) 
 {
 	for (let i = 0; i < image_data.data.length; i += 4) 
 	{
@@ -97,39 +97,37 @@ export function posterize(context, image_data, palette)
   	context.putImageData(image_data, 0, 0);
 }
 
-export function get_img_data(img_node)
+function get_img_data(url) 
 {
    let img = document.createElement("img");
-   img.crossOrigin = "Anonymous";
-   img.src = img_node.url;
+   image.crossOrigin = "Anonymous";
+   img.src = url;
    let canvas = document.createElement('canvas');
    let context = canvas.getContext('2d');
-   let width = img.width || img.offsetWidth || img.naturalWidth;
-   let height = img.height || img.offsetHeight || img.naturalHeight;
-   context.drawImage(target_image, 0, 0, canvas.width, canvas.height);
-   let img_data = null;
+   context.drawImage(img, 0, 0);
    /* Due to browser security measures, some images will always cause errors, no fix */
    try
    {
-      img_data = context.getImageData(0, 0, width, height);
+	  let img_data = context.getImageData(0, 0, canvas.width, canvas.height);
+	  return img_data.data;
    }
    catch(e)
    {
       console.log(e.message);
    }
-   return img_data.data;
 }
 
-export let group_threshold = 0.3;
-export function set_group_threshold(threshold)
+let group_threshold = 0.3;
+function set_group_threshold(threshold)
 {
 	group_threshold = threshold;
 }
-export let group_headers = [];  /* --> [h, s, l] type: number[]    */
-export let hpixel_color_count = {};
-export function get_color_distribution(img) 
+let group_headers = [];  /* --> [h, s, l] type: number[]    */
+let hpixel_color_count = {};
+function get_color_distribution(url) 
 {
-	let data = get_img_data(img); //[R,B,G,A,R,B,G,A]
+	let data = get_img_data(url); //[R,B,G,A,R,B,G,A]
+	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
 	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
 	for (i = 0; i < data.length; i += 8) {
@@ -179,6 +177,5 @@ export function get_color_distribution(img)
 			
 		}
   	}
-  	return groups;
 }
 
