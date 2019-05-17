@@ -1,6 +1,8 @@
-/* 
- *  Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
- *	read more about color conversion math here: http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
+/** 
+ * Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+ * Read more about color conversion math here: http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
+ *  
+ * Converts hsl pixel values to rgb pixel values
  */
 function hsl_to_rgb(h, s, l) 
 {
@@ -27,6 +29,13 @@ function hsl_to_rgb(h, s, l)
     }
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
+
+/** 
+ * Code from: http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+ * Read more about color conversion math here: http://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
+ *  
+ * Converts rgb pixel values to hsl pixel values
+ */
 function rgb_to_hsl(r, g, b) 
 {
     r /= 255, g /= 255, b /= 255;
@@ -54,9 +63,12 @@ function rgb_to_hsl(r, g, b)
         h /= 6;
     }
     return [h, s, l];
-  }
-/* 
- *  Code from: http://stackoverflow.com/a/13587077/1204332
+}
+
+/** 
+ * Code from: http://stackoverflow.com/a/13587077/1204332
+ * 
+ * Finds the distance between two hsl pixels (how similar they are)
  */
 function color_distance(v1, v2) 
 {
@@ -70,57 +82,53 @@ function color_distance(v1, v2)
 	return Math.sqrt(d);
 };
 
+/**
+ * Converts a pixel [h, s, l] array to a string in the format "h-s-l"
+ * @param {number Array} pixel_data array of three values: h, s and l 
+ */
 function pixel_data_to_key(pixel_data) 
 {
 	return pixel_data[0].toString() + '-' + pixel_data[1].toString() + '-' + pixel_data[2].toString();
 }
 
-/***********************************************************************************************************/
-
-function posterize(context, image_data, palette) 
-{
-	for (let i = 0; i < image_data.data.length; i += 4) 
-	{
-    	rgb = image_data.data.slice(i, i + 3);
-    	hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
-    	key = pixel_data_to_key(hsl);
-		if (key in palette) 
-		{
-      		new_hsl = palette[key];
-			new_rgb = hsl_to_rgb(new_hsl[0], new_hsl[1], new_hsl[2]);
-			rgb = hsl_to_rgb(hsl);
-			image_data.data[i] = new_rgb[0];
-			image_data.data[i + 1] = new_rgb[1];
-			image_data.data[i + 2] = new_rgb[2];
-    	}
-  	}
-  	context.putImageData(image_data, 0, 0);
-}
-
+/**
+ * Gets the array where every four items represent the rgba values a pixel
+ * in the source image element
+ * @param {string} url source of image element
+ */
 function get_img_data(url) 
 {
-   let img = document.createElement("img");
-   img.src = url;
-   let canvas = document.createElement('canvas');
-   let context = canvas.getContext('2d');
-   context.drawImage(img, 0, 0);
-   /* Due to browser security measures, some images will always cause errors, no fix */
-   try
-   {
-	  let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-	  return img_data;
-   }
-   catch(e)
-   {
-      console.log(e.message);
-   }
+	let img = document.createElement("img");
+	img.src = url;
+	let canvas = document.createElement('canvas');
+	let context = canvas.getContext('2d');
+	context.drawImage(img, 0, 0);
+	/* Due to browser security measures, some images will always cause errors, no fix */
+	try
+	{
+		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+		return img_data;
+	}
+	catch(e)
+	{
+		console.log(e.message);
+	}
 }
 
 let group_threshold = .1;
+/**
+ * Sets the threshold from .1 to 1 that indicates how similar two hsl
+ * pixels must be in order to be placed under the same color group
+ * .1 (very similar) - 1 (similar)
+ * Example: with a .1 threshold reds and dark reds would be seprated into
+ * two groups but in a 1 threshold they'd be in the same group
+ * @param {number} threshold .1 (very similar) - 1 (similar)
+ */
 function set_group_threshold(threshold)
 {
 	group_threshold = threshold;
 }
+
 let group_headers = [];  /* --> [h, s, l] type: number[]    */
 let hpixel_color_count = {};
 /**
