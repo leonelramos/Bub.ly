@@ -136,7 +136,7 @@ let hpixel_color_count = {};
  * Creates a 
  * @param {*} url 
  */
-function get_color_distribution(url) 
+function color_distribution(url) 
 {
 	let data = get_img_data(url);
 	console.log(data);
@@ -174,8 +174,8 @@ function get_color_distribution(url)
 			if (color_distance(original_pixel, group_headers[j]) < group_threshold) 
 			{
 				group_found = true;
-				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key] += 1;
-				else hpixel_color_count[header_pixel_key] = 1;
+				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key].count += 1;
+				else hpixel_color_count[header_pixel_key].count = 1;
 			}
 			if (group_found) break;
 		
@@ -183,13 +183,26 @@ function get_color_distribution(url)
 		/* if no similar header found */
 		if (!group_found) 
 		{
-			if (original_pixel_key in hpixel_color_count) hpixel_color_count[original_pixel_key] += 1;
-			else hpixel_color_count[original_pixel_key] = 1;
+			if (original_pixel_key in hpixel_color_count) hpixel_color_count[original_pixel_key].count += 1;
+			else hpixel_color_count[original_pixel_key] = {count: 1, rgb: []};
 			/* if the current pixel has no similar colors in the headers and 
 			   is not itself in the headers, add it to the headers */
 			if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
 			
 		}
-  	}
+	}
+	set_color_distribution();
 }
 
+function pixel_key_to_data(key)
+{
+	let [r,g,b] = key.split('-').map(Number);
+	return [r, g, b];
+}
+
+function set_color_distribution()
+{
+
+}
+
+export {set_color_distribution, set_group_threshold, group_threshold};

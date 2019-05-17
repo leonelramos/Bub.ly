@@ -1,7 +1,7 @@
-let color_distribution = new Map();
-let unique_colors = new Array();
+import * as colorsLib from './js/colorGrouping.js';
+
+let color_distribution = {};
 let images = [...document.getElementsByTagName('img')];
-//const cg = require("./js/colorGrouping");
 
 chrome.runtime.onMessage.addListener(got_request);
 
@@ -24,12 +24,12 @@ function start_bubly(settings)
    let min_height = settings.include_small_imgs ? 1 : 100;
    let min_width = settings.include_small_imgs ? 1 : 100;
    images.crossOrigin = "Anonymous";
-   min_size_images = images.filter(img => ((img.height >= min_height || img.offsetHeight >= min_height) && 
-   (img.width >= min_width || img.offsetWidth >= min_width)));
+   let condHeight = img => {(img.height >= min_height || img.offsetHeight >= min_height)}
+   let condWidth = img => {(img.width >= min_width || img.offsetWidth >= min_width)}
+   min_size_images = images.filter(img => (condHeight(img) && condWidth(img)));
    for(idx in min_size_images){
       console.log(`processing image#${idx}`);
       console.log(`(width:${min_size_images[idx].width},height:${min_size_images[idx].height},offset width:${min_size_images[idx].offsetWidth},offset height:${min_size_images[idx].offsetHeight})`);
-      [color_distribution, unique_colors] = cg.get_color_distribution(min_size_images[idx], color_distribution, unique_colors);
    }
    // forAsync(images, (img, idx) => {
    //    return new Promise(resolve => {
