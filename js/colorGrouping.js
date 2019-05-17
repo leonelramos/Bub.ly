@@ -92,6 +92,18 @@ function pixel_data_to_key(pixel_data)
 }
 
 /**
+ * converts a pixel key, "h-s-l" or "r-g-b", to a three-array holding the three values
+ * @param {string} key pixel data key in the format "h-s-l" or "r-g-b"
+ */
+function pixel_key_to_data(key)
+{
+	let [r,g,b] = key.split('-').map(Number);
+	return [r, g, b];
+}
+
+/* Holds total number of pixels */
+let total_pixels = 0;
+/**
  * Gets the array where every four items represent the rgba values a pixel
  * in the source image element
  * @param {string} url source of image element
@@ -107,6 +119,7 @@ function get_img_data(url)
 	try
 	{
 		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+		total_pixels += img_data.length;
 		return img_data;
 	}
 	catch(e)
@@ -115,7 +128,7 @@ function get_img_data(url)
 	}
 }
 
-let group_threshold = .1;
+let group_threshold = .3;
 /**
  * Sets the threshold from .1 to 1 that indicates how similar two hsl
  * pixels must be in order to be placed under the same color group
@@ -136,7 +149,7 @@ let hpixel_color_count = {};
  * Creates a 
  * @param {*} url 
  */
-function color_distribution(url) 
+function get_color_distribution(url) 
 {
 	let data = get_img_data(url);
 	console.log(data);
@@ -174,8 +187,9 @@ function color_distribution(url)
 			if (color_distance(original_pixel, group_headers[j]) < group_threshold) 
 			{
 				group_found = true;
-				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key].count += 1;
-				else hpixel_color_count[header_pixel_key].count = 1;
+				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key].count++;
+				else hpixel_color_count[header_pixel_key] = {count: 1, hsl: group_headers[j]};
+				//else hpixel_color_count[header_pixel_key] = {count: 1, rgb: hsl_to_rgb(...group_headers[j])};
 			}
 			if (group_found) break;
 		
@@ -183,26 +197,15 @@ function color_distribution(url)
 		/* if no similar header found */
 		if (!group_found) 
 		{
-			if (original_pixel_key in hpixel_color_count) hpixel_color_count[original_pixel_key].count += 1;
-			else hpixel_color_count[original_pixel_key] = {count: 1, rgb: []};
+			if (original_pixel_key in hpixel_color_count) hpixel_color_count[original_pixel_key].count++;
+			else hpixel_color_count[original_pixel_key] = {count: 1, hsl: original_pixel};
+			//else hpixel_color_count[original_pixel_key] = {count: 1, rgb: hsl_to_rgb(...original_pixel)};
 			/* if the current pixel has no similar colors in the headers and 
 			   is not itself in the headers, add it to the headers */
 			if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
-			
 		}
 	}
-	set_color_distribution();
+	return hpixel_color_count;
 }
 
-function pixel_key_to_data(key)
-{
-	let [r,g,b] = key.split('-').map(Number);
-	return [r, g, b];
-}
-
-function set_color_distribution()
-{
-
-}
-
-export {set_color_distribution, set_group_threshold, group_threshold};
+//export {set_color_distribution, set_group_threshold, group_threshold};
