@@ -12,6 +12,7 @@
 function run_tests()
 {
     tests.forEach((__, test_name) => {
+        console.log(`Test name: ${test_name}`);
         run_test(test_name);
     });
 }
@@ -23,7 +24,7 @@ function run_tests()
 function run_test(test_name)
 {
     let test = tests.get(test_name);
-    test_unit(test.fn, test.input, test.expected_output);
+    assert(test.fn, test.input, test.expected_output);
 }
 
 /**
@@ -32,7 +33,7 @@ function run_test(test_name)
  * @param {*} input input for the function
  * @param {*} expected_output expected output of the function
  */
-function test_unit(fn, input, expected_output) 
+function assert(fn, input, expected_output) 
 {
     let actual_output = fn(...input);
     if(actual_output === expected_output) console.log(`SUCCESS: ${fn.name} returned expected output`);

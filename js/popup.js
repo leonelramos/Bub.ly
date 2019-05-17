@@ -1,7 +1,6 @@
 let bubly_btn;
 let save_btn;
 let status_message;
-let include_grey_checkbox;
 let include_small_checkbox;
 /* signal content script to start Bub.ly */
 function start_bubly()
@@ -9,7 +8,6 @@ function start_bubly()
     status_message.innerHTML = "Status: Bub.ly starting...";
     let setting_values = 
     {
-		include_grey: include_grey_checkbox.checked,
         include_small_imgs: include_small_checkbox.checked
     }
     let message = {start_bubly: true, save_data: false, settings: setting_values};
@@ -25,7 +23,6 @@ function save_data()
     status_message.innerHTML = "Status: Bub.ly saving..."
     let setting_values = 
     {
-        include_grey: include_grey_checkbox.checked,
         include_small_imgs: include_small_checkbox.checked
     }
     let message = {start_bubly: false, save_data: true, settings: setting_values};
@@ -49,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
     bubly_btn = document.getElementById("bubly-btn");
     save_btn = document.getElementById("save-btn");
     status_message = document.getElementById("status");
-    include_grey_checkbox = document.getElementById("include-greys");
     include_small_checkbox = document.getElementById("include-small-imgs");
     bubly_btn.addEventListener("click", start_bubly);
     save_btn.addEventListener("click", save_data);

@@ -108,8 +108,8 @@ function get_img_data(url)
    /* Due to browser security measures, some images will always cause errors, no fix */
    try
    {
-	  let img_data = context.getImageData(0, 0, canvas.width, canvas.height);
-	  return img_data.data;
+	  let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+	  return img_data;
    }
    catch(e)
    {
@@ -126,11 +126,12 @@ let group_headers = [];  /* --> [h, s, l] type: number[]    */
 let hpixel_color_count = {};
 /**
  * Function derived from: https://jsfiddle.net/ivanchaer/z0ohzghs/
+ * Creates a 
  * @param {*} url 
  */
 function get_color_distribution(url) 
 {
-	let data = get_img_data(url); //[R,B,G,A,R,B,G,A]
+	let data = get_img_data(url);
 	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
 	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */

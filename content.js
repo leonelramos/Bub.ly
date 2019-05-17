@@ -43,54 +43,54 @@ function start_bubly(settings)
    // });
 }
 
-function process_img_data(img_data) 
-{
-   for (let i = 0; i < img_data.length; i += 4) {
-      let rgba = [img_data[i + 0], img_data[i + 1], img_data[i + 2], img_data[i + 3]];
-      let rgba_key = gen_rgba_key(rgba);
-      if(color_distribution.has(rgba_key)) color_distribution.set(rgba_key, color_distribution.get(rgba_key) + 1);
-      else color_distribution.set(rgba_key, 1);
-    }
-}
+// function process_img_data(img_data) 
+// {
+//    for (let i = 0; i < img_data.length; i += 4) {
+//       let rgba = [img_data[i + 0], img_data[i + 1], img_data[i + 2], img_data[i + 3]];
+//       let rgba_key = gen_rgba_key(rgba);
+//       if(color_distribution.has(rgba_key)) color_distribution.set(rgba_key, color_distribution.get(rgba_key) + 1);
+//       else color_distribution.set(rgba_key, 1);
+//     }
+// }
 
 /* Returns data of input image */
-function get_img_data(url) 
-{
-   let img = document.createElement("img");
-   img.crossOrigin = "Anonymous";
-   img.src = url;
-   let canvas = document.createElement('canvas');
-   let context = canvas.getContext('2d');
-   let width = img.width || img.offsetWidth || img.naturalWidth;
-   let height = img.height || img.offsetHeight || img.naturalHeight;
-   context.drawImage(img, 0, 0);
-   let img_data = null;
-   /* Due to browser security measures, some images will always cause errors, no fix */
-   try
-   {
-      img_data = context.getImageData(0, 0, width, height).data;
-   }
-   catch(e)
-   {
-      console.log(e.message);
-   }
-   return img_data;
-}
+// function get_img_data(url) 
+// {
+//    let img = document.createElement("img");
+//    img.crossOrigin = "Anonymous";
+//    img.src = url;
+//    let canvas = document.createElement('canvas');
+//    let context = canvas.getContext('2d');
+//    let width = img.width || img.offsetWidth || img.naturalWidth;
+//    let height = img.height || img.offsetHeight || img.naturalHeight;
+//    context.drawImage(img, 0, 0);
+//    let img_data = null;
+//    /* Due to browser security measures, some images will always cause errors, no fix */
+//    try
+//    {
+//       img_data = context.getImageData(0, 0, width, height).data;
+//    }
+//    catch(e)
+//    {
+//       console.log(e.message);
+//    }
+//    return img_data;
+// }
 /* given an array of 4 8bit integers, representing an r,g,b,a value respectivley
  * creates a string representation in the form "r,g,b,a"
  */
-function gen_rgba_key(rgba) 
-{
-   let r = rgba[0];
-   let g = rgba[1];
-   let b = rgba[2];
-   let a = rgba[3];
-   // let r = rgba[0] * (1 << 24);
-   // let g = rgba[1] << 16;
-   // let b = rgba[2] << 8;
-   // return r + g + b + rgba[3];
-   return `${r},${g},${b},${a}`;
-}
+// function gen_rgba_key(rgba) 
+// {
+//    let r = rgba[0];
+//    let g = rgba[1];
+//    let b = rgba[2];
+//    let a = rgba[3];
+//    // let r = rgba[0] * (1 << 24);
+//    // let g = rgba[1] << 16;
+//    // let b = rgba[2] << 8;
+//    // return r + g + b + rgba[3];
+//    return `${r},${g},${b},${a}`;
+// }
 
 /* Function Author: Stijn de Witt
  * GitHub: https://github.com/Download/for-async
