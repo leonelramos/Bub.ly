@@ -100,7 +100,6 @@ function posterize(context, image_data, palette)
 function get_img_data(url) 
 {
    let img = document.createElement("img");
-   image.crossOrigin = "Anonymous";
    img.src = url;
    let canvas = document.createElement('canvas');
    let context = canvas.getContext('2d');
@@ -117,7 +116,7 @@ function get_img_data(url)
    }
 }
 
-let group_threshold = 1;
+let group_threshold = .1;
 function set_group_threshold(threshold)
 {
 	group_threshold = threshold;

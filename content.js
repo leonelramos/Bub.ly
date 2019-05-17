@@ -23,7 +23,7 @@ function start_bubly(settings)
 {
    let min_height = settings.include_small_imgs ? 1 : 100;
    let min_width = settings.include_small_imgs ? 1 : 100;
-   
+   images.crossOrigin = "Anonymous";
    min_size_images = images.filter(img => ((img.height >= min_height || img.offsetHeight >= min_height) && 
    (img.width >= min_width || img.offsetWidth >= min_width)));
    for(idx in min_size_images){
