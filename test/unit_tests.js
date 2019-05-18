@@ -4,7 +4,7 @@
  * @author Leonel Ramos
  */
  
- let tests = new Map();
+let tests = new Map();
 
 /**
  * Runs all the currently existing tests
