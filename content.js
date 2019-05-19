@@ -252,12 +252,12 @@ function get_color_distribution(url, threshold) {
 function create_floating_bubbles(color_distribution) {
 	let new_divs = [];
 	Object.keys(color_distribution).forEach(function(key,index) {
-		let new_div = document.createElement("div");
 		let [r,g,b] = color_distribution[key].rgb;
-		let right = (Math.random() + .1) * 150;
+		let new_div = document.createElement("div");
+		let left_offset = (Math.random() + .1) * 150;
 		let size = (Math.random() + .1) * ((Math.random() + 1) * 100) + 1;
 		let css = `position: relative;
-					  left: ${right}px;
+					  left: ${left_offset}px;
 					  float: left;
 					  margin: ${size + 10}px;
 					  width: ${size}px;
@@ -272,15 +272,15 @@ function create_floating_bubbles(color_distribution) {
 }
 
 /**
- * 
- * @param {*} bubble 
+ * Applies a wobble animation to each bubble after the floating animation ends. 
+ * @param {*} bubble a DOM div element with an animation applied
  */
 function wobble_bubble(bubble) {
-	window.addEventListener("animationend", function shake(event) {
+	window.addEventListener("animationend", function wobble(event) {
 		console.log(`wobble time`);
 		let seconds = (Math.random() * 10 + 1) % 10; 
 		bubble.style.cssText += `; animation-delay:${seconds}s`;
 		bubble.className += " wobble";
-		window.removeEventListener("animationend", shake, false);
+		window.removeEventListener("animationend", wobble, false);
 	}, false);
 }
