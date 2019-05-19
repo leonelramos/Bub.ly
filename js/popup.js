@@ -1,7 +1,6 @@
 let bubly_btn;
 let save_btn;
 let status_message;
-let include_small_checkbox;
 /* signal content script to start Bub.ly */
 function start_bubly()
 {
@@ -46,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function() {
     bubly_btn = document.getElementById("bubly-btn");
     save_btn = document.getElementById("save-btn");
     status_message = document.getElementById("status");
-    include_small_checkbox = document.getElementById("include-small-imgs");
     bubly_btn.addEventListener("click", start_bubly);
     save_btn.addEventListener("click", save_data);
 });

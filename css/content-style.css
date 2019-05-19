@@ -1,0 +1,43 @@
+@keyframes slideInUp {
+    from {
+        transform: translate3d(0, 2000%, 0);
+        visibility: visible;
+    }
+  
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.slideInUp {
+    border-radius: 50%;
+    animation-name: slideInUp;
+    animation-duration: 7s;
+}
+  
+@keyframes shake {
+    from,
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translate3d(-5px, 0, 0);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translate3d(5px, 0, 0);
+    }
+}
+
+.shake {
+    animation-name: shake;
+    animation-duration: infinite;
+}
