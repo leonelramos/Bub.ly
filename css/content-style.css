@@ -1,43 +1,43 @@
 @keyframes floatUp {
     from {
-        transform: translate3d(0, 2000%, 0);
-        visibility: visible;
+      transform: translate3d(0, 2000%, 0);
+      visibility: visible;
     }
   
     to {
-        transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
     }
-}
-
-.floatUp {
+  }
+  .floatUp {
     border-radius: 50%;
     animation-name: floatUp;
     animation-duration: 7s;
-}
+  }
   
-@keyframes wobble {
+  @keyframes wobble {
     from,
     to {
-        transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
     }
-
+  
     10%,
     30%,
     50%,
     70%,
     90% {
-        transform: translate3d(-5px, 0, 0);
+      transform: translate3d(-5px, 0, 0);
     }
-
+  
     20%,
     40%,
     60%,
     80% {
-        transform: translate3d(5px, 0, 0);
+      transform: translate3d(5px, 0, 0);
     }
-}
-
-.shake {
+  }
+  
+  .wobble {
     animation-name: wobble;
-    animation-duration: infinite;
-}
+    animation-duration: 20s;
+    animation-iteration-count: infinite;
+  }

@@ -249,20 +249,24 @@ function get_color_distribution(url, threshold) {
   * applies the floating animation class to trigger css animation
   * @param {*} color_distribution Mapping where every pixel color is mapped to a similar color "group"
   */
-function create_floating_bubbles(color_distribution) {
+function create_floating_bubbles(color_distribution, total_pixels) {
 	let new_divs = [];
+	let max_bubble_size = 10000;
 	Object.keys(color_distribution).forEach(function(key,index) {
+		console.log(key);
 		let [r,g,b] = color_distribution[key].rgb;
+		console.log(`r : ${r}, g : ${g}, b : ${b}`)
 		let new_div = document.createElement("div");
 		let left_offset = (Math.random() + .1) * 150;
-		let size = (Math.random() + .1) * ((Math.random() + 1) * 100) + 1;
+		let size = (color_distribution[key].count / total_pixels) * max_bubble_size;
 		let css = `position: relative;
 					  left: ${left_offset}px;
 					  float: left;
 					  margin: ${size + 10}px;
 					  width: ${size}px;
 					  height:${size}px;
-					  background-color: rgb(${r},${g},${b})`;							
+					  background-color: rgb(${r},${g},${b})`;	
+					  console.log(css);						
 		new_div.style.cssText = css;
 		new_div.className = "floatUp";
 		new_divs[index] = new_div;
