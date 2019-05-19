@@ -244,34 +244,34 @@ function get_color_distribution(url, threshold) {
  *                                                                                                   *
  *****************************************************************************************************/
 
-function start_animation(color_distribution) {
-
+function create_floating_bubbles(color_distribution) {
+	let new_divs = [];
+	Object.keys(color_distribution).forEach(function(key,index) {
+		let new_div = document.createElement("div");
+		let [r,g,b] = color_distribution[key].rgb;
+		let right = (Math.random() + .1) * 150;
+		let size = (Math.random() + .1) * ((Math.random() + 1) * 100) + 1;
+		let css = `position: relative;
+					  left: ${right}px;
+					  float: left;
+					  margin: ${size + 10}px;
+					  width: ${size}px;
+					  height:${size}px;
+					  background-color: rgb(${r},${g},${b})`;							
+		new_div.style.cssText = css;
+		new_div.className = "slideInUp";
+		new_divs[index] = new_div;
+		document.body.appendChild(new_div);
+		wobble_bubble(new_div);
+  	});
 }
 
-function create_bubble(rgb, size, canvas) {
-
-}
-
-let idx = 0;
-let divs = [];
-for (idx = 0; idx < 20; idx++) {
-	let newDiv = document.createElement("div");
-   let right = Math.random() * 150 + 1;
-  	let size = Math.random() * (Math.random() * 100 + 1) + 1;
-  	newDiv.style.cssText = `position:relative;left:${right}px;float: left;margin: ${size +
-   								10}px; width:${size}px;height:${size}px`;
-  	newDiv.className = "slideInUp";
-  	divs[idx] = newDiv;
-  	document.body.appendChild(newDiv);
-	wobble(newDiv);
-}
-
-function wobble(elem) {
-  	window.addEventListener("animationend", function shake(event) {
-  	console.log(`shake time`);
-  	let seconds = (Math.random() * 10 + 1)%10+1;
-  	elem.style.cssText += `; animation-delay:${seconds}s`;
-	elem.className += " shake";
-	window.removeEventListener("animationend", shake, false);
-}, false);
+function wobble_bubble(bubble) {
+	window.addEventListener("animationend", function shake(event) {
+		console.log(`shake time`);
+		let seconds = (Math.random() * 10 + 1) % 10; 
+		bubble.style.cssText += `; animation-delay:${seconds}s`;
+		bubble.className += " shake";
+		window.removeEventListener("animationend", shake, false);
+	}, false);
 }
