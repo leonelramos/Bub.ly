@@ -1,4 +1,4 @@
-@keyframes slideInUp {
+@keyframes floatUp {
     from {
         transform: translate3d(0, 2000%, 0);
         visibility: visible;
@@ -9,13 +9,13 @@
     }
 }
 
-.slideInUp {
+.floatUp {
     border-radius: 50%;
-    animation-name: slideInUp;
+    animation-name: floatUp;
     animation-duration: 7s;
 }
   
-@keyframes shake {
+@keyframes wobble {
     from,
     to {
         transform: translate3d(0, 0, 0);
@@ -38,6 +38,6 @@
 }
 
 .shake {
-    animation-name: shake;
+    animation-name: wobble;
     animation-duration: infinite;
 }

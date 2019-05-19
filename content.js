@@ -244,6 +244,11 @@ function get_color_distribution(url, threshold) {
  *                                                                                                   *
  *****************************************************************************************************/
 
+ /**
+  * Creates a round div for each color in color_distribution and
+  * applies the floating animation class to trigger css animation
+  * @param {*} color_distribution Mapping where every pixel color is mapped to a similar color "group"
+  */
 function create_floating_bubbles(color_distribution) {
 	let new_divs = [];
 	Object.keys(color_distribution).forEach(function(key,index) {
@@ -259,19 +264,23 @@ function create_floating_bubbles(color_distribution) {
 					  height:${size}px;
 					  background-color: rgb(${r},${g},${b})`;							
 		new_div.style.cssText = css;
-		new_div.className = "slideInUp";
+		new_div.className = "floatUp";
 		new_divs[index] = new_div;
 		document.body.appendChild(new_div);
 		wobble_bubble(new_div);
   	});
 }
 
+/**
+ * 
+ * @param {*} bubble 
+ */
 function wobble_bubble(bubble) {
 	window.addEventListener("animationend", function shake(event) {
-		console.log(`shake time`);
+		console.log(`wobble time`);
 		let seconds = (Math.random() * 10 + 1) % 10; 
 		bubble.style.cssText += `; animation-delay:${seconds}s`;
-		bubble.className += " shake";
+		bubble.className += " wobble";
 		window.removeEventListener("animationend", shake, false);
 	}, false);
 }
