@@ -227,14 +227,26 @@ function get_color_distribution(url, threshold) {
 		}
 		/* if no similar header found */
 		if (!group_found) {
-			if (original_pixel_key in hpixel_color_count) hpixel_color_count[original_pixel_key].count++;
-			else hpixel_color_count[original_pixel_key] = {count: 1, rgb: hsl_to_rgb(...original_pixel)};
-			/* if the current pixel has no similar colors in the headers and 
+			if (original_pixel_key in hpixel_color_count) {
+				hpixel_color_count[original_pixel_key].count++;
+				//if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
+			}
+			else if (!is_dark_pixel(...original_pixel)) {
+				hpixel_color_count[original_pixel_key] = {
+					count: 1, 
+					rgb: hsl_to_rgb(...original_pixel)
+				};
+				/* if the current pixel has no similar colors in the headers and 
 			   is not itself in the headers, add it to the headers */
-			if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
+				if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
+			}
 		}
 	}
 	return hpixel_color_count;
+}
+
+function is_dark_pixel(h, s, l) {
+	return (l < .5 || s < .5);
 }
 
 /************************************* Bub.ly Animation Generator ************************************
@@ -249,29 +261,36 @@ function get_color_distribution(url, threshold) {
   * applies the floating animation class to trigger css animation
   * @param {*} color_distribution Mapping where every pixel color is mapped to a similar color "group"
   */
-function create_floating_bubbles(color_distribution, total_pixels) {
+function create_floating_bubbles(color_distribution, total_pixels, render_limit) {
 	let new_divs = [];
 	let max_bubble_size = 10000;
+	let width = window.innerWidth
+	|| document.documentElement.clientWidth
+	|| document.body.clientWidth;
+	let height = window.innerHeight
+	|| document.documentElement.clientHeight
+	|| document.body.clientHeight;
+
 	Object.keys(color_distribution).forEach(function(key,index) {
-		console.log(key);
-		let [r,g,b] = color_distribution[key].rgb;
-		console.log(`r : ${r}, g : ${g}, b : ${b}`)
-		let new_div = document.createElement("div");
-		let left_offset = (Math.random() + .1) * 150;
-		let size = (color_distribution[key].count / total_pixels) * max_bubble_size;
-		let css = `position: relative;
-					  left: ${left_offset}px;
-					  float: left;
-					  margin: ${size + 10}px;
-					  width: ${size}px;
-					  height:${size}px;
-					  background-color: rgb(${r},${g},${b})`;	
-					  console.log(css);						
-		new_div.style.cssText = css;
-		new_div.className = "floatUp";
-		new_divs[index] = new_div;
-		document.body.appendChild(new_div);
-		wobble_bubble(new_div);
+		if (index < render_limit) {
+			console.log(key);
+			let [r,g,b] = color_distribution[key].rgb;
+			console.log(`r : ${r}, g : ${g}, b : ${b}`)
+			let new_div = document.createElement("div");
+			let size = (color_distribution[key].count / total_pixels) * max_bubble_size;
+			let css = `position: absolute;
+						  left: ${getRandomInt(0, width)}px;
+						  top: ${getRandomInt(0, height)}px;
+						  width: ${size}px;
+						  height: ${size}px;
+						  background-color: rgb(${r},${g},${b});`;	
+						  console.log(css);						
+			new_div.style.cssText = css;
+			new_div.className = "floatUp";
+			new_divs[index] = new_div;
+			document.body.appendChild(new_div);
+			wobble_bubble(new_div);
+		}
   	});
 }
 
@@ -282,9 +301,15 @@ function create_floating_bubbles(color_distribution, total_pixels) {
 function wobble_bubble(bubble) {
 	window.addEventListener("animationend", function wobble(event) {
 		console.log(`wobble time`);
-		let seconds = (Math.random() * 10 + 1) % 10; 
-		bubble.style.cssText += `; animation-delay:${seconds}s`;
+		let seconds = (Math.random() * 10 + 1) % 6; 
+		bubble.style.cssText += `animation-delay: ${seconds}s;`;
 		bubble.className += " wobble";
 		window.removeEventListener("animationend", wobble, false);
 	}, false);
+}
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
