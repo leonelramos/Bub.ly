@@ -189,7 +189,7 @@ function get_img_data(url) {
  */
 function get_color_distribution(url, threshold) {
    let group_headers = [];  /* [h, s, l] type: number[] */
-	let hpixel_color_count = {}; /* "h-s-l" string : {count number, rgb number array} object */
+	let color_distribution = {}; /* "h-s-l" string : {count number, rgb number array} object */
 	let data = get_img_data(url);
 	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
@@ -220,19 +220,19 @@ function get_color_distribution(url, threshold) {
 			// if a similar color was already observed
 			if (color_distance(original_pixel, group_headers[j]) < threshold) {
 				group_found = true;
-				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key].count++;
-				else hpixel_color_count[header_pixel_key] = {count: 1, rgb: hsl_to_rgb(...group_headers[j])};
+				if (header_pixel_key in color_distribution) color_distribution[header_pixel_key].count++;
+				else color_distribution[header_pixel_key] = {count: 1, rgb: hsl_to_rgb(...group_headers[j])};
 			}
 			if (group_found) break;
 		}
 		/* if no similar header found */
 		if (!group_found) {
-			if (original_pixel_key in hpixel_color_count) {
-				hpixel_color_count[original_pixel_key].count++;
+			if (original_pixel_key in color_distribution) {
+				color_distribution[original_pixel_key].count++;
 				//if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
 			}
 			else if (!is_dark_pixel(...original_pixel)) {
-				hpixel_color_count[original_pixel_key] = {
+				color_distribution[original_pixel_key] = {
 					count: 1, 
 					rgb: hsl_to_rgb(...original_pixel)
 				};
@@ -242,7 +242,7 @@ function get_color_distribution(url, threshold) {
 			}
 		}
 	}
-	return hpixel_color_count;
+	return color_distribution;
 }
 
 function is_dark_pixel(h, s, l) {

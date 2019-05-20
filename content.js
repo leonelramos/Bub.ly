@@ -22,16 +22,23 @@ function got_request(request, sender, sendResponse) {
                "from a content script:" + sender.tab.url :
                "from the extension");
    if (request.start_bubly) {
-      start_bubly(request.settings);
+      start_bubly(request.config);
       sendResponse({status: "Bub.ly complete"});
-   }
-   if (request.save_data) {
-      sendResponse({status: "Bub.ly saved"});
-   }
+	}
+	else if (request.stop_bubly) {
+		stop_bubly();
+	}
 }
 
-function start_bubly(settings) {
-   let color_distribution = get_color_distribution;
+function start_bubly(config) {
+	let [color_distribution, total_pixels] = get_color_distribution(config.url, config.threshold);
+	create_floating_bubbles(color_distribution, total_pixels, config.render_limit);
+}
+
+function stop_bubly() {
+	document.getElementsByClassName('bubble floatUp wobble').forEach(function(node) {
+		node.parentNode.removeChild(node);	
+	});
 }
 
 /* Function Author: Stijn de Witt
@@ -148,9 +155,6 @@ function pixel_key_to_data(key) {
 	let [r,g,b] = key.split('-').map(Number);
 	return [r, g, b];
 }
-
-/* Holds total number of pixels */
-let total_pixels = 0;
 /**
  * Gets the array where every four items represent the rgba values a pixel
  * in the source image element
@@ -166,7 +170,7 @@ function get_img_data(url) {
 	try {
 		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
 		total_pixels += img_data.length;
-		return img_data;
+		return [img_data, total_pixels];
 	}
 	catch(e) {
 		console.log(e.message);
@@ -189,8 +193,8 @@ function get_img_data(url) {
  */
 function get_color_distribution(url, threshold) {
    let group_headers = [];  /* [h, s, l] type: number[] */
-	let hpixel_color_count = {}; /* "h-s-l" string : {count number, rgb number array} object */
-	let data = get_img_data(url);
+	let color_distribution = {}; /* "h-s-l" string : {count number, rgb number array} object */
+	let [data, total_pixels] = get_img_data(url);
 	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
 	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
@@ -220,19 +224,19 @@ function get_color_distribution(url, threshold) {
 			// if a similar color was already observed
 			if (color_distance(original_pixel, group_headers[j]) < threshold) {
 				group_found = true;
-				if (header_pixel_key in hpixel_color_count) hpixel_color_count[header_pixel_key].count++;
-				else hpixel_color_count[header_pixel_key] = {count: 1, rgb: hsl_to_rgb(...group_headers[j])};
+				if (header_pixel_key in color_distribution) color_distribution[header_pixel_key].count++;
+				else color_distribution[header_pixel_key] = {count: 1, rgb: hsl_to_rgb(...group_headers[j])};
 			}
 			if (group_found) break;
 		}
 		/* if no similar header found */
 		if (!group_found) {
-			if (original_pixel_key in hpixel_color_count) {
-				hpixel_color_count[original_pixel_key].count++;
+			if (original_pixel_key in color_distribution) {
+				color_distribution[original_pixel_key].count++;
 				//if (group_headers.indexOf(original_pixel) == -1) group_headers.push(original_pixel);
 			}
 			else if (!is_dark_pixel(...original_pixel)) {
-				hpixel_color_count[original_pixel_key] = {
+				color_distribution[original_pixel_key] = {
 					count: 1, 
 					rgb: hsl_to_rgb(...original_pixel)
 				};
@@ -242,7 +246,7 @@ function get_color_distribution(url, threshold) {
 			}
 		}
 	}
-	return hpixel_color_count;
+	return [color_distribution, total_pixels];
 }
 
 function is_dark_pixel(h, s, l) {
@@ -286,7 +290,7 @@ function create_floating_bubbles(color_distribution, total_pixels, render_limit)
 						  background-color: rgb(${r},${g},${b});`;	
 						  console.log(css);						
 			new_div.style.cssText = css;
-			new_div.className = "floatUp";
+			new_div.className = "bubble floatUp";
 			new_divs[index] = new_div;
 			document.body.appendChild(new_div);
 			wobble_bubble(new_div);
