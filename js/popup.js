@@ -1,5 +1,4 @@
 let bubly_btn;
-let save_btn;
 let status_message;
 /* signal content script to start Bub.ly */
 function start_bubly()
@@ -46,5 +45,4 @@ document.addEventListener("DOMContentLoaded", function() {
     save_btn = document.getElementById("save-btn");
     status_message = document.getElementById("status");
     bubly_btn.addEventListener("click", start_bubly);
-    save_btn.addEventListener("click", save_data);
 });
