@@ -14,6 +14,14 @@
  *     This section handles communication between the popup interface and all the functionality      *
  *                                                                                                   *
  *****************************************************************************************************/
+window.onload = function () {
+	let images = document.getElementsByTagName('img');
+	for (imgIdx in images) {
+		images[idx].onclick = () => {
+			send_img_mes
+		}
+	}
+}
 
 chrome.runtime.onMessage.addListener(got_request);
 
@@ -164,12 +172,16 @@ function get_img_data(url) {
 	let img = document.createElement("img");
 	img.src = url;
 	let canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
 	let context = canvas.getContext('2d');
 	context.drawImage(img, 0, 0);
 	/* Due to browser security measures, some images will always cause errors, no fix */
 	try {
+		console.log(`width: ${img.width}, height: ${img.height}`)
 		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-		total_pixels += img_data.length;
+		let total_pixels = img_data.length;
+		console.log(`total pixels: ${total_pixels}`);
 		return [img_data, total_pixels];
 	}
 	catch (e) {
