@@ -15,8 +15,6 @@
  *                                                                                                   *
  *****************************************************************************************************/
 
-chrome.runtime.onMessage.addListener(got_request);
-
 function got_request(request, sender, sendResponse) {
 	console.log(sender.tab ?
 		"from a content script:" + sender.tab.url :
@@ -27,6 +25,14 @@ function got_request(request, sender, sendResponse) {
 	}
 	else if (request.stop_bubly) {
 		stop_bubly();
+	}
+}
+
+function make_test_config(url, threshold, render_limit) {
+	return {
+		url: url,
+		threshold: threshold,
+		render_limit: render_limit
 	}
 }
 
