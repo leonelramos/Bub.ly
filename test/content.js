@@ -170,12 +170,16 @@ function get_img_data(url) {
 	let img = document.createElement("img");
 	img.src = url;
 	let canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
 	let context = canvas.getContext('2d');
 	context.drawImage(img, 0, 0);
 	/* Due to browser security measures, some images will always cause errors, no fix */
 	try {
+		console.log(`width: ${img.width}, height: ${img.height}`)
 		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-		total_pixels += img_data.length;
+		let total_pixels = img_data.length;
+		console.log(`total pixels: ${total_pixels}`);
 		return [img_data, total_pixels];
 	}
 	catch (e) {
@@ -201,15 +205,13 @@ function get_color_distribution(url, threshold) {
 	let group_headers = [];  /* [h, s, l] type: number[] */
 	let color_distribution = {}; /* "h-s-l" string : {count number, rgb number array} object */
 	let [data, total_pixels] = get_img_data(url);
+	console.log(data.length);
 	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
 	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
-	for (i = 0; i < data.length; i += 8) {
+	for (i = 0; i < data.length; i += 4) {
 		let rgb = data.slice(i, i + 3);
 		let hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
-		original_pixels.push(hsl);
-		rgb = data.slice(i + 4, i + 7);
-		hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
 		original_pixels.push(hsl);
 	}
 
@@ -217,7 +219,7 @@ function get_color_distribution(url, threshold) {
 	let original_pixel_key;
 	let original_pixel;
 	/* iterate through every original pixel in image */
-	for (i = 0; i < number_of_pixels; i += 1) {
+	for (i = 0; i < number_of_pixels; i++) {
 		original_pixel = original_pixels[i]; /* --> [h, s, l] type: number[] */
 		if (group_headers.length == 0) group_headers.push(original_pixel);
 		group_found = false;
@@ -256,7 +258,7 @@ function get_color_distribution(url, threshold) {
 }
 
 function is_dark_pixel(h, s, l) {
-	return (l < .5 || s < .5);
+	return l < .15 || s < .15;
 }
 
 /************************************* Bub.ly Animation Generator ************************************
