@@ -18,12 +18,12 @@
 chrome.runtime.onMessage.addListener(got_request);
 
 function got_request(request, sender, sendResponse) {
-   console.log(sender.tab ?
-               "from a content script:" + sender.tab.url :
-               "from the extension");
-   if (request.start_bubly) {
-      start_bubly(request.config);
-      sendResponse({status: "Bub.ly complete"});
+	console.log(sender.tab ?
+		"from a content script:" + sender.tab.url :
+		"from the extension");
+	if (request.start_bubly) {
+		start_bubly(request.config);
+		sendResponse({ status: "Bub.ly complete" });
 	}
 	else if (request.stop_bubly) {
 		stop_bubly();
@@ -36,8 +36,8 @@ function start_bubly(config) {
 }
 
 function stop_bubly() {
-	document.getElementsByClassName('bubble floatUp wobble').forEach(function(node) {
-		node.parentNode.removeChild(node);	
+	document.getElementsByClassName('bubble floatUp wobble').forEach(function (node) {
+		node.parentNode.removeChild(node);
 	});
 }
 
@@ -49,12 +49,12 @@ function stop_bubly() {
 function forAsync(arr, work) {
 	function loop(arr, i) {
 		return new Promise((resolve, reject) => {
-			if (i >= arr.length) {resolve()}
+			if (i >= arr.length) { resolve() }
 			else try {
 				Promise.resolve(work(arr[i], i))
-				.then(() => resolve(loop(arr, i+1)))
-				.catch(reject);
-			} catch(error) {reject(error)}
+					.then(() => resolve(loop(arr, i + 1)))
+					.catch(reject);
+			} catch (error) { reject(error) }
 		})
 	}
 	return loop(arr, 0);
@@ -74,24 +74,24 @@ function forAsync(arr, work) {
  * Converts hsl pixel values to rgb pixel values
  */
 function hsl_to_rgb(h, s, l) {
-	let r, g, b; 
-   if (s == 0) r = g = b = l; // achromatic
-   else {
-      let hue2rgb = function hue2rgb(p, q, t) {
-         if (t < 0) t += 1;
-         if (t > 1) t -= 1;
-         if (t < 1 / 6) return p + (q - p) * 6 * t;
-         if (t < 1 / 2) return q;
-         if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-         return p;
-      }
-      let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      let p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1 / 3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1 / 3);
-   }
-   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	let r, g, b;
+	if (s == 0) r = g = b = l; // achromatic
+	else {
+		let hue2rgb = function hue2rgb(p, q, t) {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		}
+		let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		let p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
 /** 
@@ -101,29 +101,29 @@ function hsl_to_rgb(h, s, l) {
  * Converts rgb pixel values to hsl pixel values
  */
 function rgb_to_hsl(r, g, b) {
-   r /= 255, g /= 255, b /= 255;
-   let max = Math.max(r, g, b), 
-       min = Math.min(r, g, b);
-   let h, s, l = (max + min) / 2;
+	r /= 255, g /= 255, b /= 255;
+	let max = Math.max(r, g, b),
+		min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
 
-   if (max == min) h = s = 0; // achromatic
-   else {
-      let d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-         case r:
-            h = (g - b) / d + (g < b ? 6 : 0);
-            break;
-         case g:
-            h = (b - r) / d + 2;
-            break;
-         case b:
-            h = (r - g) / d + 4;
-            break;
-      }
-      h /= 6;
-   }
-   return [h, s, l];
+	if (max == min) h = s = 0; // achromatic
+	else {
+		let d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		switch (max) {
+			case r:
+				h = (g - b) / d + (g < b ? 6 : 0);
+				break;
+			case g:
+				h = (b - r) / d + 2;
+				break;
+			case b:
+				h = (r - g) / d + 4;
+				break;
+		}
+		h /= 6;
+	}
+	return [h, s, l];
 }
 
 /** 
@@ -132,9 +132,9 @@ function rgb_to_hsl(r, g, b) {
  * Finds the distance between two hsl pixels (how similar they are)
  */
 function color_distance(v1, v2) {
-   let i, d = 0;
+	let i, d = 0;
 	for (i = 0; i < v1.length; i++) {
-	   d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
+		d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
 	}
 	return Math.sqrt(d);
 };
@@ -144,7 +144,7 @@ function color_distance(v1, v2) {
  * @param {number Array} pixel_data array of three values: h, s and l 
  */
 function pixel_data_to_key(pixel_data) {
-   return pixel_data[0].toString() + '-' + pixel_data[1].toString() + '-' + pixel_data[2].toString();
+	return pixel_data[0].toString() + '-' + pixel_data[1].toString() + '-' + pixel_data[2].toString();
 }
 
 /**
@@ -152,7 +152,7 @@ function pixel_data_to_key(pixel_data) {
  * @param {string} key pixel data key in the format "h-s-l" or "r-g-b"
  */
 function pixel_key_to_data(key) {
-	let [r,g,b] = key.split('-').map(Number);
+	let [r, g, b] = key.split('-').map(Number);
 	return [r, g, b];
 }
 /**
@@ -172,7 +172,7 @@ function get_img_data(url) {
 		total_pixels += img_data.length;
 		return [img_data, total_pixels];
 	}
-	catch(e) {
+	catch (e) {
 		console.log(e.message);
 	}
 }
@@ -192,28 +192,28 @@ function get_img_data(url) {
  * @param {number} threshold .1 (very similar) - 1 (similar)
  */
 function get_color_distribution(url, threshold) {
-   let group_headers = [];  /* [h, s, l] type: number[] */
+	let group_headers = [];  /* [h, s, l] type: number[] */
 	let color_distribution = {}; /* "h-s-l" string : {count number, rgb number array} object */
 	let [data, total_pixels] = get_img_data(url);
 	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
 	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
 	for (i = 0; i < data.length; i += 8) {
-	   let rgb = data.slice(i, i + 3);
+		let rgb = data.slice(i, i + 3);
 		let hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
 		original_pixels.push(hsl);
 		rgb = data.slice(i + 4, i + 7);
 		hsl = rgb_to_hsl(rgb[0], rgb[1], rgb[2]);
 		original_pixels.push(hsl);
-  	}
-	
+	}
+
 	let number_of_pixels = original_pixels.length;
 	let original_pixel_key;
 	let original_pixel;
 	/* iterate through every original pixel in image */
 	for (i = 0; i < number_of_pixels; i += 1) {
-      original_pixel = original_pixels[i]; /* --> [h, s, l] type: number[] */
-      if (group_headers.length == 0) group_headers.push(original_pixel);
+		original_pixel = original_pixels[i]; /* --> [h, s, l] type: number[] */
+		if (group_headers.length == 0) group_headers.push(original_pixel);
 		group_found = false;
 		original_pixel_key = pixel_data_to_key(original_pixel);
 		/* compare the current pixel to each pixel in group_headers 
@@ -225,7 +225,7 @@ function get_color_distribution(url, threshold) {
 			if (color_distance(original_pixel, group_headers[j]) < threshold) {
 				group_found = true;
 				if (header_pixel_key in color_distribution) color_distribution[header_pixel_key].count++;
-				else color_distribution[header_pixel_key] = {count: 1, rgb: hsl_to_rgb(...group_headers[j])};
+				else color_distribution[header_pixel_key] = { count: 1, rgb: hsl_to_rgb(...group_headers[j]) };
 			}
 			if (group_found) break;
 		}
@@ -237,7 +237,7 @@ function get_color_distribution(url, threshold) {
 			}
 			else if (!is_dark_pixel(...original_pixel)) {
 				color_distribution[original_pixel_key] = {
-					count: 1, 
+					count: 1,
 					rgb: hsl_to_rgb(...original_pixel)
 				};
 				/* if the current pixel has no similar colors in the headers and 
@@ -260,42 +260,42 @@ function is_dark_pixel(h, s, l) {
  *                                                                                                   *
  *****************************************************************************************************/
 
- /**
-  * Creates a round div for each color in color_distribution and
-  * applies the floating animation class to trigger css animation
-  * @param {*} color_distribution Mapping where every pixel color is mapped to a similar color "group"
-  */
+/**
+ * Creates a round div for each color in color_distribution and
+ * applies the floating animation class to trigger css animation
+ * @param {*} color_distribution Mapping where every pixel color is mapped to a similar color "group"
+ */
 function create_floating_bubbles(color_distribution, total_pixels, render_limit) {
 	let new_divs = [];
 	let max_bubble_size = 10000;
 	let width = window.innerWidth
-	|| document.documentElement.clientWidth
-	|| document.body.clientWidth;
+		|| document.documentElement.clientWidth
+		|| document.body.clientWidth;
 	let height = window.innerHeight
-	|| document.documentElement.clientHeight
-	|| document.body.clientHeight;
+		|| document.documentElement.clientHeight
+		|| document.body.clientHeight;
 
-	Object.keys(color_distribution).forEach(function(key,index) {
+	Object.keys(color_distribution).forEach(function (key, index) {
 		if (index < render_limit) {
 			console.log(key);
-			let [r,g,b] = color_distribution[key].rgb;
+			let [r, g, b] = color_distribution[key].rgb;
 			console.log(`r : ${r}, g : ${g}, b : ${b}`)
 			let new_div = document.createElement("div");
 			let size = (color_distribution[key].count / total_pixels) * max_bubble_size;
 			let css = `position: absolute;
-						  left: ${getRandomInt(0, width)}px;
-						  top: ${getRandomInt(0, height)}px;
-						  width: ${size}px;
-						  height: ${size}px;
-						  background-color: rgb(${r},${g},${b});`;	
-						  console.log(css);						
+						  	 left: ${getRandomInt(0, width)}px;
+						  	 top: ${getRandomInt(0, height)}px;
+						  	 width: ${size}px;
+						  	 height: ${size}px;
+						  	 background-color: rgb(${r},${g},${b});`;
+			console.log(css);
 			new_div.style.cssText = css;
 			new_div.className = "bubble floatUp";
 			new_divs[index] = new_div;
 			document.body.appendChild(new_div);
 			wobble_bubble(new_div);
 		}
-  	});
+	});
 }
 
 /**
@@ -305,7 +305,7 @@ function create_floating_bubbles(color_distribution, total_pixels, render_limit)
 function wobble_bubble(bubble) {
 	window.addEventListener("animationend", function wobble(event) {
 		console.log(`wobble time`);
-		let seconds = (Math.random() * 10 + 1) % 6; 
+		let seconds = (Math.random() * 10 + 1) % 6;
 		bubble.style.cssText += `animation-delay: ${seconds}s;`;
 		bubble.className += " wobble";
 		window.removeEventListener("animationend", wobble, false);
