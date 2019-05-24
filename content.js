@@ -18,9 +18,13 @@ window.onload = function () {
 	let images = document.getElementsByTagName('img');
 	for (imgIdx in images) {
 		images[idx].onclick = () => {
-			send_img_mes
+			send_popup_url(images[idx].src);
 		}
 	}
+}
+
+function send_popup_url(url) {
+	
 }
 
 chrome.runtime.onMessage.addListener(got_request);
