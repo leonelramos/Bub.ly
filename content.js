@@ -16,17 +16,21 @@
  *****************************************************************************************************/
 chrome.runtime.onMessage.addListener(got_request);
 
+/**
+ * Checks message to start bub.ly or stop it
+ * Responds with status
+ * @param {*} request 
+ * @param {*} sender 
+ * @param {*} sendResponse 
+ */
 function got_request(request, sender, sendResponse) {
-	console.log(sender.tab ?
-		"from a content script:" + sender.tab.url :
-		"from the extension");
-	if (request.start_bubly) {
-		start_bubly(request.config);
-		sendResponse({ status: "Bub.ly complete" });
-	}
-	else if (request.stop_bubly) {
+	if (request.stop_bubly) {
 		stop_bubly();
 	}
+	else {
+		start_bubly(request.config);
+	}
+	sendResponse("");
 }
 
 function start_bubly(config) {
@@ -155,26 +159,27 @@ function pixel_key_to_data(key) {
 	return [r, g, b];
 }
 /**
- * Gets the array where every four items represent the rgba values a pixel
+ * Gets the array where every four items represent the rgba values of a pixel
  * in the source image element
- * @param {string} url source of image element
+ * @param {string} url source of image
  */
 function get_img_data(url) {
 	let img = document.createElement("img");
+	img.crossOrigin = "";
 	img.src = url;
 	let canvas = document.createElement('canvas');
 	canvas.width = img.width;
 	canvas.height = img.height;
 	let context = canvas.getContext('2d');
 	context.drawImage(img, 0, 0);
-	/* Due to browser security measures, some images will always cause errors, no fix */
 	try {
 		console.log(`width: ${img.width}, height: ${img.height}`)
 		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-		let total_pixels = img_data.length;
+		let total_pixels = img_data.length/4;
 		console.log(`total pixels: ${total_pixels}`);
 		return [img_data, total_pixels];
 	}
+	/* fucking CORS */
 	catch (e) {
 		console.log(e.message);
 	}
@@ -290,7 +295,7 @@ function create_floating_bubbles(color_distribution, total_pixels, render_limit)
 						  	 top: ${getRandomInt(0, height)}px;
 						  	 width: ${size}px;
 						  	 height: ${size}px;
-						  	 background-color: rgb(${r},${g},${b});`;
+						  	 background-color: rgb(${r},${g},${b})`;
 			console.log(css);
 			new_div.style.cssText = css;
 			new_div.className = "bubble floatUp";

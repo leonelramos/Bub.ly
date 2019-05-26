@@ -14,7 +14,24 @@
 			<ul class="main-menu-list">
 				<li class="main-menu-item">
 					<input class="button" id="bubly-btn" type="button" value="Bub.ly">
+					<label for="img-url">Paste Image URL:</label><input type="text" name="img-url" id="img-url">
+					<h3 class="warning-msg">WARNING: Save workspace before running. Slow computers may freeze.</h3>
 					<p id="status">Status: not running...</p>
+					<h3>Options</h3>
+					<label for="threshold">Color Accuracy (Higher accuracy -> more colors)</label>
+					<select name="threshold" id="threshold">
+						<option value=".3">Very Low</option>
+						<option value=".2" selected="selected">Low (recommended for most)</option>
+						<option value=".1">High</option>
+						<option value=".05">Very High (not recommended)</option>
+					</select>
+					<label for="render-limit">Render Limit (Maximum amount of bubbles to animate)</label>
+					<select name="render-limit" id="render-limit">
+						<option value="200">200</option>
+						<option value="500" selected="selected">500 (recommended for most)</option>
+						<option value="1000">1000</option>
+						<option value="3000">3000</option>
+					</select>
 				</li>
 			</ul>
 		</div>
