@@ -1,48 +1,47 @@
-body {
-    min-width: 200px;
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Courier New", Courier, monospace;
 }
 
-.container {
-    text-align: center;
-    padding: 10px;
-}
+/* Start Bubly Button Styling */
 
-ul {
-    list-style: none;
-    padding: 0px;
-}
-.main-menu {
-    display: inline-block;
-}
-
-.button {
-    border: none;
-    padding: 10px 15px;
+#bubly-btn {
+    -webkit-box-shadow: 2px 1px 3px 0px #899599;
+    box-shadow: 2px 1px 3px 0px #899599;
+    border: 0px solid #fc94f4;
+    border-radius: 50%;
+    padding: 1.7rem 1rem;
     margin: 0;
     text-decoration: none;
-    background: #e798ff;
-    color: #ffffff;
-    font-family: sans-serif;
+    text-shadow: 2px 1px 2px #899599;
+    letter-spacing: .5px;
+    background: #ffaff9;
+    color: #ff0043;
+    font-family: "Courier New", Courier, monospace;
     font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
     text-align: center;
-    transition: background 250ms ease-in-out, 
-                transform 150ms ease;
+    transition: background 250ms ease-in-out, transform 150ms ease;
     -webkit-appearance: none;
     -moz-appearance: none;
-    border-radius: 5px;
 }
 
-.button:hover,
-.button:focus {
-    background: #4fc3d8;
+#bubly-btn:hover {
+    background: #71c7fc;
 }
 
-.button:focus {
-    outline: 1px solid #fff;
-    outline-offset: -4px;
+#bubly-btn:focus {
+    color: #7fffcd;
+    outline: 0;
 }
 
-.button:active {
+#bubly-btn:active {
+    position: relative;
+    top: 1px;
     transform: scale(0.99);
 }
+
+/* Configurations Styling */
