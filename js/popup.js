@@ -2,7 +2,7 @@ let bubly_btn, img_url, status_message, threshold, render_limit;
 /* signal content script to start Bub.ly */
 function start_bubly() {
 	config = {
-		url: img_url.value,
+		url: img_url.value.trim(),
 		threshold: Number(threshold.value),
 		render_limit: Number(render_limit.value)
 	}
