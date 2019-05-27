@@ -33,8 +33,8 @@ function got_request(request, sender, sendResponse) {
 	sendResponse("");
 }
 
-function start_bubly(config) {
-	let [color_distribution, total_pixels] = get_color_distribution(config.url, config.threshold);
+async function start_bubly(config) {
+	let [color_distribution, total_pixels] = await get_color_distribution(config.url, config.threshold);
 	create_floating_bubbles(color_distribution, total_pixels, config.render_limit);
 }
 
@@ -163,26 +163,49 @@ function pixel_key_to_data(key) {
  * in the source image element
  * @param {string} url source of image
  */
-function get_img_data(url) {
-	let img = document.createElement("img");
-	img.crossOrigin = "";
-	img.src = url;
-	let canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	let context = canvas.getContext('2d');
+async function get_img_data(url) {
+	const response = await fetch(url);
+	const blob = await response.blob();
+	const canvas = document.createElement('canvas');
+	const img = await img_from_blob(blob);
+	
+	canvas.width = img.naturalWidth;
+	canvas.height = img.naturalHeight;
+
+	const context = canvas.getContext('2d');
 	context.drawImage(img, 0, 0);
-	try {
-		console.log(`width: ${img.width}, height: ${img.height}`)
-		let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
-		let total_pixels = img_data.length/4;
-		console.log(`total pixels: ${total_pixels}`);
-		return [img_data, total_pixels];
-	}
-	/* fucking CORS */
-	catch (e) {
-		console.log(e.message);
-	}
+
+	const img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+	const total_pixels = img_data.length / 4;
+
+	return [img_data, total_pixels];
+	// let img = document.createElement("img");
+	// img.crossOrigin = "";
+	// img.src = url;
+	// let canvas = document.createElement('canvas');
+	// canvas.width = img.width;
+	// canvas.height = img.height;
+	// let context = canvas.getContext('2d');
+	// context.drawImage(img, 0, 0);
+	// try {
+	// 	console.log(`width: ${img.width}, height: ${img.height}`)
+	// 	let img_data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+	// 	let total_pixels = img_data.length/4;
+	// 	console.log(`total pixels: ${total_pixels}`);
+	// 	return [img_data, total_pixels];
+	// }
+	// /* fucking CORS */
+	// catch (e) {
+	// 	console.log(e.message);
+	// }
+}
+
+function img_from_blob(blob) {
+	return new Promise(done => {
+		const img = new Image();
+		img.onload = _ => done(img);
+		img.src = URL.createObjectURL(blob);
+	})
 }
 
 /**
@@ -199,10 +222,10 @@ function get_img_data(url) {
  * @param {string} url source of an image DOM element
  * @param {number} threshold .1 (very similar) - 1 (similar)
  */
-function get_color_distribution(url, threshold) {
+async function get_color_distribution(url, threshold) {
 	let group_headers = [];  /* [h, s, l] type: number[] */
 	let color_distribution = {}; /* "h-s-l" string : {count number, rgb number array} object */
-	let [data, total_pixels] = get_img_data(url);
+	let [data, total_pixels] = await get_img_data(url);
 	console.log(data);
 	/* convert every rgb pixel to hsl and store it */
 	let original_pixels = []; /* --> Array of [h, s, l] type: number[]    */
