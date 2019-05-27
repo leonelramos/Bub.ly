@@ -39,7 +39,7 @@ async function start_bubly(config) {
 }
 
 function stop_bubly() {
-	document.getElementsByClassName('bubble floatUp wobble').forEach(function (node) {
+	[...document.getElementsByClassName('bubble')].forEach(function (node) {
 		node.parentNode.removeChild(node);
 	});
 }

@@ -10,24 +10,59 @@
 
 <body>
 	<div class="flex-container">
-		<button id="bubly-btn">B.ly</button>
-		<label for="img-url">Paste Image URL:</label><input type="text" name="img-url" id="img-url">
-		<h3 class="warning-msg">WARNING: Save workspace before running. Slow computers may freeze.</h3>
+		<div class="bubly-container container">
+			<button id="bubly-btn">B.ly</button>
+		</div>
+		<label for="img-url">Enter Image URL:</label><input type="text" name="img-url" id="img-url">
+		<div class="warning-container container">
+			<h3 class="warning">WARNING: </h3>
+			<img class="warning-before show-msg-btn" src="/images/warning_icon_before.png" alt="warning icon before"
+				width="40px" height="40px">
+			<div class="opening-msg">
+				<p class="warning-msg">
+					Save all work and progress before running. Slow computers may lag and freeze.
+					If running a slow PC, avoid using anything but the lowest settings.
+				</p>
+			</div>
+		</div>
 		<p id="status">Status: not running...</p>
-		<h3>Configuration</h3>
-		<label for="threshold">Color Accuracy (Higher accuracy -> more colors)</label>
-		<select name="threshold" id="threshold">
-			<option value=".3">Very Low</option>
-			<option value=".2" selected="selected">Low (recommended for most)</option>
-			<option value=".1">High</option>
-			<option value=".05">Very High (not recommended)</option>
-		</select>
-		<label for="render-limit">Render Limit (Maximum amount of bubbles to animate)</label>
-		<select name="render-limit" id="render-limit">
-			<option value="200">200</option>
-			<option value="500" selected="selected">500 (recommended for most)</option>
-			<option value="1000">1000</option>
-			<option value="3000">3000</option>
+		<div class="config-container container">
+			<h3>Configuration</h3>
+			<label for="threshold">Color Accuracy</label>
+			<img class="question-before show-msg-btn" src="/images/question_icon_before.png" alt="question icon before"
+				width="40px" height="40px">
+			<div class="opening-msg">
+				<p class="config-help">
+					Color accuracy is a threshold dictating how unique two colors must be in order to be considered different colors.
+					For example if the image has three different shades of red, all with similar r,g,b values, 
+					a lower accuracy would treat them as the same color while a higher accuracy would 
+					recognize them as seperate colors.
+				</p>
+			</div>
+			<select name="threshold" id="threshold" class="custom-select">
+				<option value=".3">Very Low</option>
+				<option value=".2" selected="selected">Low (recommended for most)</option>
+				<option value=".1">High</option>
+				<option value=".05">Very High (not recommended)</option>
+			</select>
+			<label for="render-limit">Render Limit</label>
+			<img class="question-before show-msg-btn" src="/images/question_icon_before.png" alt="question icon before"
+				width="40px" height="40px">
+			<div class="opening-msg">
+				<p class="config-help">
+					The render limit is a limit to the amount of bubbles Bub.ly will generate.
+					This does not guarentee that Bub.ly will generate as many bubbles as this limit.
+					The amount of bubbles gerated is depedant on the color accuracy and how many colors the image has.
+					Render limit simply sets a cap on the number of bubles created.
+				</p>
+			</div>
+			<select name="render-limit" id="render-limit" class="custom-select">
+				<option value="200">200</option>
+				<option value="500" selected="selected">500 (recommended for most)</option>
+				<option value="1000">1000</option>
+				<option value="3000">3000</option>
+			</select>
+		</div>
 	</div>
 </body>
 

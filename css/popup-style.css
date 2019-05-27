@@ -1,48 +1,147 @@
+body {
+	margin: 0;
+	min-width: 300px;
+}
+
 .flex-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: "Courier New", Courier, monospace;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-family: "Courier New", Courier, monospace;
+}
+
+.container {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 /* Start Bubly Button Styling */
+
 /* warning icon before hex ff0303 after hex ff8003*/
 
 #bubly-btn {
-    -webkit-box-shadow: 2px 1px 3px 0px #899599;
-    box-shadow: 2px 1px 3px 0px #899599;
-    border: 0px solid #fc94f4;
-    border-radius: 50%;
-    padding: 1.7rem 1rem;
-    margin: 0;
-    text-decoration: none;
-    text-shadow: 2px 1px 2px #899599;
-    letter-spacing: .5px;
-    background: #ffaff9;
-    color: #ff0043;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    transition: background 250ms ease-in-out, transform 150ms ease;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+	-webkit-box-shadow: 2px 1px 3px 0px #899599;
+	box-shadow: 2px 1px 3px 0px #899599;
+	border: 0px solid #fc94f4;
+	border-radius: 50%;
+	padding: 1.7rem 1rem;
+	margin: 0;
+	text-decoration: none;
+	text-shadow: 2px 1px 2px #899599;
+	letter-spacing: .5px;
+	background: #ffaff9;
+	color: #ff0043;
+	font-family: "Courier New", Courier, monospace;
+	font-size: 1rem;
+	font-weight: bold;
+	cursor: pointer;
+	text-align: center;
+	transition: background 250ms ease-in-out, transform 150ms ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 }
 
 #bubly-btn:hover {
-    background: #71c7fc;
+	background: #71c7fc;
 }
 
 #bubly-btn:focus {
-    color: #7fffcd;
-    outline: 0;
+	color: #7fffcd;
+	outline: 0;
 }
 
 #bubly-btn:active {
-    position: relative;
-    top: 1px;
-    transform: scale(0.99);
+	position: relative;
+	top: 1px;
+	transform: scale(0.99);
 }
 
 /* Configurations Styling */
+
+.warning-container, .config-container {
+	background: #f7f7f7;
+}
+
+.warning {
+	display: inline-block;
+	color: #ff0303;
+}
+
+#img-url {
+	border-radius: .3em;
+}
+
+#img-url:focus {
+	outline: none;
+}
+
+.opening-msg {
+	max-height:0px;
+  overflow:hidden;
+  transition:all .3s ease;
+}
+
+.open {
+	max-height: 260px;
+}
+
+/* Other CSS */
+
+::-webkit-scrollbar-track {
+	border-radius: 5px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+	width: 5px;
+	border-radius: 5px;
+	background-color: rgba(201, 201, 201, 0.76);
+}
+
+.custom-select {
+	display: block;
+	font-size: 10px;
+	font-weight: 700;
+	color: #444;
+	line-height: 1.3;
+	padding: .6em 1.4em .5em .8em;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	margin: 0;
+	border: 0px solid #aaa;
+	box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+	border-radius: .3em;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	background-color: #ffaff9;
+	background-position: right .7em top 50%, 0 0;
+	background-size: .65em auto, 100%;
+}
+
+.custom-select::-ms-expand {
+	display: none;
+}
+
+.custom-select:hover {
+	background-color: #71c7fc;
+}
+
+.custom-select:focus {
+	border-color: #aaa;
+	color: #222;
+	outline: none;
+	outline: 0;
+}
+
+.custom-select option {
+	font-weight: normal;
+}
